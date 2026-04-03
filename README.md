@@ -45,7 +45,7 @@ The application requires **Node.js 20.9.0** or newer. Node.js 18 is no longer su
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/gocallum/person-search.git
+  git clone https://github.com/Alkaeya/person-search.git
    cd person-search
    ```
 
@@ -59,7 +59,7 @@ The application requires **Node.js 20.9.0** or newer. Node.js 18 is no longer su
 
   ```env
   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/person_search?schema=public"
-  NEXT_PUBLIC_GITHUB_REPO_URL="https://github.com/your-username/person-search"
+  NEXT_PUBLIC_GITHUB_REPO_URL="https://github.com/Alkaeya/person-search"
   ```
 
 4. Generate Prisma client, apply migrations, and seed sample data:
@@ -283,6 +283,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Contact
 
-Callum Bir - [@callumbir](https://twitter.com/callumbir)  
-Project Link: [https://github.com/gocallum/person-search](https://github.com/gocallum/person-search)  
+Alkaeya De la Pena - [https://github.com/Alkaeya/person-search](https://github.com/Alkaeya/person-search)  
+Project Link: [https://github.com/Alkaeya/person-search](https://github.com/Alkaeya/person-search)  
 
