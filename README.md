@@ -9,7 +9,8 @@ The upgrade to Next.js 16 builds upon the async API changes from Next.js 15, wit
 ## Features
 
 - Asynchronous search functionality
-- Server-side filtering of user data
+- Full CRUD operations backed by a PostgreSQL database via Prisma
+- Server-side filtering of persisted person records
 - Server-rendered and hydrated client-side components
 - Single data fetch for improved performance
 - Responsive design using Tailwind CSS
@@ -17,6 +18,7 @@ The upgrade to Next.js 16 builds upon the async API changes from Next.js 15, wit
 - Custom fonts (Geist Sans and Geist Mono)
 - Improved type safety with TypeScript
 - Modular and reusable component architecture
+- Built-in documentation routes: `/about`, `/github`, `/database`
 
 ## Technologies Used
 
@@ -54,6 +56,19 @@ The application requires **Node.js 20.9.0** or newer. Node.js 18 is no longer su
    ```
 
 3. Create a `.env.local` file in the root directory and add any necessary environment variables.
+
+  ```env
+  DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/person_search?schema=public"
+  NEXT_PUBLIC_GITHUB_REPO_URL="https://github.com/your-username/person-search"
+  ```
+
+4. Generate Prisma client, apply migrations, and seed sample data:
+
+  ```bash
+  pnpm prisma:generate
+  pnpm prisma:migrate
+  pnpm prisma:seed
+  ```
 
 ### Running the Development Server
 

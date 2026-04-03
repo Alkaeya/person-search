@@ -8,6 +8,11 @@ export function useUser(userId: string | null) {
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
+    if (!userId) {
+      queueMicrotask(() => setUser(null))
+      return
+    }
+
     if (userId) {
       getUserById(userId).then(fetchedUser => {
         if (fetchedUser) {
@@ -16,8 +21,6 @@ export function useUser(userId: string | null) {
           setUser(null)
         }
       })
-    } else {
-      setUser(null)
     }
   }, [userId])
 
