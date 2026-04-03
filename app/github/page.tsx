@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Github } from 'lucide-react'
 
 const repositoryUrl =
-  process.env.NEXT_PUBLIC_GITHUB_REPO_URL ?? 'https://github.com/gocallum/person-search'
+  process.env.NEXT_PUBLIC_GITHUB_REPO_URL ?? 'https://github.com/Alkaeya/person-search'
 
 export default function GithubPage() {
   return (
