@@ -5,11 +5,11 @@ const prisma = new PrismaClient()
 async function main() {
   await prisma.person.createMany({
     data: [
-      { name: 'John Doe', phoneNumber: '0412345678', email: 'john@example.com' },
-      { name: 'Jane Smith', phoneNumber: '0423456789', email: 'jane@example.com' },
-      { name: 'Alice Johnson', phoneNumber: '0434567890', email: 'alice@example.com' },
-      { name: 'Bob Williams', phoneNumber: '0445678901', email: 'bob@example.com' },
-      { name: 'Charlie Brown', phoneNumber: '0456789012', email: 'charlie@example.com' },
+      { name: 'John Doe', phoneNumber: '09171234567', email: 'john@example.com' },
+      { name: 'Jane Smith', phoneNumber: '09281234567', email: 'jane@example.com' },
+      { name: 'Alice Johnson', phoneNumber: '09351234567', email: 'alice@example.com' },
+      { name: 'Bob Williams', phoneNumber: '09461234567', email: 'bob@example.com' },
+      { name: 'Charlie Brown', phoneNumber: '09571234567', email: 'charlie@example.com' },
     ],
     skipDuplicates: true,
   })

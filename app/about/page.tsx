@@ -65,6 +65,26 @@ function DocumentationLinks() {
   )
 }
 
+function DeveloperProfile() {
+  return (
+    <Card className="mb-8">
+      <CardHeader>
+        <CardTitle>Developer</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3 text-muted-foreground">
+        <p>
+          This app was built by <span className="font-semibold text-foreground">Alkaeya De la Pena</span>
+          {' '}as a full-stack CRUD demonstration project using Next.js, Prisma, and PostgreSQL.
+        </p>
+        <p>
+          The goal is to provide a clean, production-ready person management experience with server actions,
+          schema validation, and reliable database-backed persistence.
+        </p>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -72,6 +92,7 @@ export default function AboutPage() {
         <h1 className="text-3xl font-bold mb-8">About This Person App</h1>
         <ArchitectureOverview />
         <StackSummary />
+        <DeveloperProfile />
         <DocumentationLinks />
         <Button asChild variant="link" className="mt-4">
           <Link href="/">
