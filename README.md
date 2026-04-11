@@ -20,6 +20,17 @@ The upgrade to Next.js 16 builds upon the async API changes from Next.js 15, wit
 - Modular and reusable component architecture
 - Built-in documentation routes: `/about`, `/github`, `/database`
 
+## 🚀 Live Demo
+
+**[View Live Application](https://person-search-gules.vercel.app)**
+
+The app is deployed on Vercel and fully functional with:
+- ✅ Complete CRUD operations
+- ✅ Real PostgreSQL database (Neon)
+- ✅ Sample data for testing
+- ✅ Responsive design for desktop & mobile
+- ✅ Built-in documentation pages
+
 ## Technologies Used
 
 - **Next.js 16** - React framework with Turbopack by default
