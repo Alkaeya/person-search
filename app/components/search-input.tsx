@@ -34,6 +34,7 @@ export default function SearchInput() {
             <AsyncSelect
                 instanceId="user-search"
                 cacheOptions={false}
+                minInputLength={2}
                 loadOptions={loadOptions}
                 onChange={handleChange}
                 placeholder="Search for a user..."
