@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from "react"
-import { useCallback, useState, useRef } from "react"
+import { useCallback, useState, useRef, useEffect } from "react"
 import { Check, Loader2 } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import {
@@ -143,6 +143,13 @@ export const SearchCommand = <T,>({
     setSearchQuery(getItemLabel(item))
     onItemSelect(item)
   }, [getItemLabel, onItemSelect])
+
+  // Keep focus on input when popover opens so user can continue typing
+  useEffect(() => {
+    if (open) {
+      inputRef.current?.focus()
+    }
+  }, [open])
 
   return (
     <div className="w-full relative">
