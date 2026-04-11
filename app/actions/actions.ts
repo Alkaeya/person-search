@@ -28,6 +28,16 @@ export async function searchUsers(query: string): Promise<User[]> {
     return results.map((user) => userSchema.parse(user))
 }
 
+export async function getAllUsers(): Promise<User[]> {
+    const results = await prisma.person.findMany({
+        orderBy: {
+            name: 'asc',
+        },
+    })
+
+    return results.map((user) => userSchema.parse(user))
+}
+
 export async function addUser(data: Omit<User, 'id'>): Promise<User> {
     const validatedInput = userSchema.omit({ id: true }).parse(data)
 
