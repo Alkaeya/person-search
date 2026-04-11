@@ -19,6 +19,8 @@ export default function SearchInput() {
         const userId = option?.value || null;
 
         if (userId) {
+            // Clear input after selection
+            setInputValue('');
             // Only reload when a user is actually selected
             const url = new URL(window.location.href);
             url.searchParams.set('userId', userId);
