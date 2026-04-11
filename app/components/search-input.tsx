@@ -16,15 +16,13 @@ export default function SearchInput() {
     const handleChange = useCallback((option: { value: string } | null) => {
         const userId = option?.value || null;
 
-        // Update the URL to reflect the selected user ID
-        const url = new URL(window.location.href);
         if (userId) {
+            // Only reload when a user is actually selected
+            const url = new URL(window.location.href);
             url.searchParams.set('userId', userId);
-        } else {
-            url.searchParams.delete('userId');
+            window.history.pushState({}, '', url.toString());
+            window.location.reload(); // Ensure server re-render when user is selected
         }
-        window.history.pushState({}, '', url.toString());
-        window.location.reload(); // Ensure server re-render
     }, []);
 
     return (
