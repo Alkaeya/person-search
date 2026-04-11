@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import { searchUsers } from '@/app/actions/actions';
 
 export default function SearchInput() {
+    const [inputValue, setInputValue] = useState('');
+
     const loadOptions = async (inputValue: string) => {
         const users = await searchUsers(inputValue);
         return users.map(user => ({
@@ -25,6 +27,10 @@ export default function SearchInput() {
         }
     }, []);
 
+    const handleInputChange = (value: string) => {
+        setInputValue(value);
+    };
+
     return (
 
         <div
@@ -35,6 +41,8 @@ export default function SearchInput() {
                 instanceId="user-search"
                 cacheOptions={false}
                 minInputLength={2}
+                inputValue={inputValue}
+                onInputChange={handleInputChange}
                 loadOptions={loadOptions}
                 onChange={handleChange}
                 placeholder="Search for a user..."
