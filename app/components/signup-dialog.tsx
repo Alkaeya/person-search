@@ -90,11 +90,25 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'
-      toast({
-        title: 'Error',
-        description: message,
-        variant: 'destructive',
-      })
+
+      // Check if it's an email already in use error
+      if (message.includes('Email already in use')) {
+        form.setError('email', {
+          type: 'manual',
+          message: 'An account with this email already exists. Please sign in instead.',
+        })
+        toast({
+          title: 'Account Exists',
+          description: 'An account with this email already exists. Please sign in instead.',
+          variant: 'destructive',
+        })
+      } else {
+        toast({
+          title: 'Error',
+          description: message,
+          variant: 'destructive',
+        })
+      }
     }
   }
 
