@@ -5,6 +5,7 @@ import { addUser } from '@/app/actions/actions'
 import { userFormSchema, User, UserFormData } from '@/app/actions/schemas'
 import { useSession } from 'next-auth/react'
 import { UserForm } from './user-form'
+import { Button } from '@/components/ui/button'
 import MutableDialog, { ActionState } from '@/components/mutable-dialog'
 
 export function UserDialog() {
@@ -26,9 +27,14 @@ export function UserDialog() {
     }
   }
 
-  // Only show the dialog if user is logged in
+  // Show message if user is not logged in
   if (!session?.user) {
-    return null
+    return (
+      <div className="mt-6">
+        <Button disabled>Add User</Button>
+        <p className="text-sm text-muted-foreground mt-2">Sign in required to add users</p>
+      </div>
+    )
   }
 
   return (
@@ -40,7 +46,7 @@ export function UserDialog() {
       addDialogTitle="Add New User"
       dialogDescription="Fill out the form below to add a new user."
       submitButtonLabel="Save"
-      defaultValues={{ name: '', email: '', phoneNumber: '' }} // Default empty values
+      defaultValues={{ name: '', email: '', phoneNumber: '' }}
     />
   )
 }
