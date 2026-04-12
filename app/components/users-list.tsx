@@ -1,15 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { searchUsers } from '@/app/actions/actions';
-import type { User } from '@/app/actions/schemas';
+import { searchUsers, deleteUser, updateUser } from '@/app/actions/actions';
+import { type User, type UserFormData } from '@/app/actions/schemas';
 import { Button } from '@/components/ui/button';
 import { Trash2, Edit2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { EditUserDialog } from './edit-user-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function UsersList() {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -28,6 +43,55 @@ export default function UsersList() {
     const timer = setTimeout(loadUsers, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  const handleEditSubmit = async (data: UserFormData) => {
+    if (!editingUser) {
+      throw new Error('No user selected for editing');
+    }
+
+    try {
+      await updateUser(editingUser.id.toString(), data);
+      toast({
+        title: 'Success',
+        description: `User ${data.name} updated successfully`,
+      });
+      // Reload users
+      const results = await searchUsers(searchQuery || '');
+      setUsers(results);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update user';
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deletingUserId === null) return;
+
+    try {
+      await deleteUser(deletingUserId.toString());
+      toast({
+        title: 'Success',
+        description: 'User deleted successfully',
+      });
+      setDeletingUserId(null);
+      // Reload users
+      const results = await searchUsers(searchQuery || '');
+      setUsers(results);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to delete user';
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      });
+      setDeletingUserId(null);
+    }
+  };
 
   if (loading && users.length === 0) {
     return <p className="text-center text-gray-500">Loading users...</p>;
@@ -63,10 +127,20 @@ export default function UsersList() {
                   <td className="py-3 px-4">{user.email}</td>
                   <td className="py-3 px-4">{user.phoneNumber}</td>
                   <td className="py-3 px-4 text-right flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="text-blue-500 hover:text-blue-700">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-blue-500 hover:text-blue-700"
+                      onClick={() => setEditingUser(user)}
+                    >
                       <Edit2 className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => setDeletingUserId(user.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </td>
@@ -76,6 +150,33 @@ export default function UsersList() {
           </table>
         </div>
       )}
+
+      {/* Edit Dialog */}
+      <EditUserDialog
+        user={editingUser}
+        onClose={() => setEditingUser(null)}
+        onSubmit={handleEditSubmit}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deletingUserId !== null} onOpenChange={(open) => {
+        if (!open) setDeletingUserId(null);
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this user? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

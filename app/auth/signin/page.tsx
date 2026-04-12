@@ -36,12 +36,27 @@ export default function SignInPage() {
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
     try {
-      await signInUser(data)
-      toast({
-        title: 'Success',
-        description: 'Signed in successfully',
+      // Call NextAuth API endpoint directly
+      const response = await fetch('/api/auth/callback/credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       })
-      router.push('/')
+
+      if (response.ok) {
+        toast({
+          title: 'Success',
+          description: 'Signed in successfully',
+        })
+        router.push('/')
+      } else {
+        throw new Error('Invalid email or password')
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Sign in failed'
       toast({
