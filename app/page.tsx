@@ -9,37 +9,29 @@ import { TechnicalOverview } from './components/technical-overview';
 export default function Home() {
   const { data: session } = useSession();
 
-  // Authenticated view - show users table
-  if (session?.user) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Search User</h1>
-          <UserDialog />
-        </div>
-        <UsersList />
-      </div>
-    );
-  }
-
-  // Unauthenticated view - show search interface with how it works
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8">User Search</h1>
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <h1 className="text-5xl font-bold mb-12">User Search</h1>
 
-      <div className="flex gap-8">
-        <div className="flex-shrink-0">
+      <div className="flex gap-6 mb-8">
+        <div className="flex-shrink-0 pt-1">
           <UserDialog />
         </div>
 
         <div className="flex-1">
-          <div className="mb-8">
-            <SearchInput />
-          </div>
-
-          <TechnicalOverview />
+          <SearchInput />
         </div>
       </div>
+
+      {/* Show users table only when authenticated */}
+      {session?.user && (
+        <div className="mb-12">
+          <UsersList />
+        </div>
+      )}
+
+      {/* Show how it works section */}
+      <TechnicalOverview />
     </div>
   );
 }
