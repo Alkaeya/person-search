@@ -51,18 +51,42 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
       // Create the user
       await signUpUser(data)
 
-      toast({
-        title: 'Success',
-        description: 'Account created! Redirecting to sign in...',
+      // Then automatically sign them in
+      const response = await fetch('/api/auth/callback/credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       })
 
-      form.reset()
-      onOpenChange(false)
+      if (response.ok) {
+        toast({
+          title: 'Success',
+          description: 'Account created and signed in!',
+        })
+        form.reset()
+        onOpenChange(false)
 
-      // Redirect to the auth signin page which will handle the actual auth
-      setTimeout(() => {
-        router.push(`/auth/signin?email=${encodeURIComponent(data.email)}`)
-      }, 1000)
+        // Redirect to home after a brief delay
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 1000)
+      } else {
+        // If auto-signin fails, redirect to signin page
+        toast({
+          title: 'Created',
+          description: 'Account created! Please sign in.',
+        })
+        form.reset()
+        onOpenChange(false)
+        setTimeout(() => {
+          router.push('/auth/signin')
+        }, 1000)
+      }
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'
