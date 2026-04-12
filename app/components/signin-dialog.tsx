@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInSchema, type SignInInput } from '@/app/actions/auth.schemas'
-import { signInUser } from '@/app/actions/auth.actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -45,26 +45,30 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
     try {
-      await signInUser(data)
-      toast({
-        title: 'Success',
-        description: 'Signed in successfully',
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: true,
+        callbackUrl: '/',
       })
-      form.reset()
-      onOpenChange(false)
-      // Give session cookie time to be set, then reload to get updated session
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
+
+      if (!result?.ok) {
+        toast({
+          title: 'Error',
+          description: 'Invalid email or password',
+          variant: 'destructive',
+        })
+        setIsLoading(false)
+      }
+      // If redirect: true, the page will redirect automatically
     } catch (error) {
+      setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'
       toast({
         title: 'Error',
         description: message,
         variant: 'destructive',
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 

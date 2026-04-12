@@ -50,36 +50,21 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
       // Create the user
       await signUpUser(data)
 
-      // Then sign them in
-      const signInResult = await signIn('credentials', {
+      // Then sign them in with redirect to let NextAuth handle session properly
+      await signIn('credentials', {
         email: data.email,
         password: data.password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: '/',
       })
-
-      if (!signInResult?.ok) {
-        throw new Error('Failed to sign in after account creation')
-      }
-
-      toast({
-        title: 'Success',
-        description: 'Account created and signed in successfully',
-      })
-      form.reset()
-      onOpenChange(false)
-      // Give session cookie time to be set, then reload to get updated session
-      setTimeout(() => {
-        window.location.reload()
-      }, 500)
     } catch (error) {
+      setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'
       toast({
         title: 'Error',
         description: message,
         variant: 'destructive',
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
