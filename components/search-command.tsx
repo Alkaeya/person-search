@@ -34,6 +34,8 @@ export interface SearchCommandProps<T> {
   placeholder?: string
   /** Text to display when no results are found */
   noResultsText?: string
+  /** Optional callback when the input receives focus */
+  onFocus?: () => void
 }
 
 /**
@@ -106,6 +108,7 @@ export const SearchCommand = <T,>({
   getItemLabel,
   placeholder = "Search...",
   noResultsText = "No results found.",
+  onFocus,
 }: SearchCommandProps<T>) => {
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<T[]>([])
@@ -160,11 +163,12 @@ export const SearchCommand = <T,>({
               className="rounded-lg border shadow-md"
               shouldFilter={false}
             >
-              <CommandInput 
+              <CommandInput
                 ref={inputRef}
                 placeholder={placeholder}
                 value={searchQuery}
                 onValueChange={handleSearch}
+                onFocus={onFocus}
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Enter') {
                     e.stopPropagation()

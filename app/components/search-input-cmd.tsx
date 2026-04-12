@@ -19,15 +19,20 @@ export default function SearchInput() {
 
   const handleSearch = React.useCallback(async (value: string) => {
     if (!session?.user) {
+      return []
+    }
+    return searchUsers(value)
+  }, [session?.user])
+
+  const handleFocus = React.useCallback(() => {
+    if (!session?.user) {
       toast({
         title: 'Sign in required',
         description: 'Please sign in to search users.',
         variant: 'destructive',
       })
       setSignInOpen(true)
-      return []
     }
-    return searchUsers(value)
   }, [session?.user, toast])
 
   const handleSelect = React.useCallback((user: User) => {
@@ -48,6 +53,7 @@ export default function SearchInput() {
           getItemLabel={(user) => user.name}
           placeholder="Search users..."
           noResultsText="No users found."
+          onFocus={handleFocus}
         />
       </div>
 
