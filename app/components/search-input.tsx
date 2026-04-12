@@ -3,11 +3,22 @@
 import React, { useCallback, useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import { searchUsers } from '@/app/actions/actions';
+import { useSession } from 'next-auth/react';
+import { useToast } from '@/hooks/use-toast';
+import { SignInDialog } from './signin-dialog';
+import { SignUpDialog } from './signup-dialog';
 
 export default function SearchInput() {
+    const { data: session } = useSession();
+    const { toast } = useToast();
     const [inputValue, setInputValue] = useState('');
+    const [signInOpen, setSignInOpen] = useState(false);
+    const [signUpOpen, setSignUpOpen] = useState(false);
 
     const loadOptions = async (inputValue: string) => {
+        if (!session?.user) {
+            return [];
+        }
         const users = await searchUsers(inputValue);
         return users.map(user => ({
             value: String(user.id),
@@ -30,25 +41,55 @@ export default function SearchInput() {
     }, []);
 
     const handleInputChange = (value: string) => {
+        if (!session?.user) {
+            if (value.length > 0) {
+                toast({
+                    title: 'Sign in required',
+                    description: 'Please sign in to search users.',
+                    variant: 'destructive',
+                });
+                setSignInOpen(true);
+            }
+            return;
+        }
         setInputValue(value);
     };
 
     return (
+        <>
+            <div
+                suppressHydrationWarning
+                className="w-full max-w-md mx-auto"
+            >
+                <AsyncSelect
+                    instanceId="user-search"
+                    cacheOptions={false}
+                    inputValue={inputValue}
+                    onInputChange={handleInputChange}
+                    loadOptions={loadOptions}
+                    onChange={handleChange}
+                    placeholder="Search for a user..."
+                    isDisabled={!session?.user}
+                />
+            </div>
 
-        <div
-            suppressHydrationWarning
-            className="w-full max-w-md mx-auto"
-        >
-            <AsyncSelect
-                instanceId="user-search"
-                cacheOptions={false}
-                inputValue={inputValue}
-                onInputChange={handleInputChange}
-                loadOptions={loadOptions}
-                onChange={handleChange}
-                placeholder="Search for a user..."
+            <SignInDialog
+                open={signInOpen}
+                onOpenChange={setSignInOpen}
+                onSignUpClick={() => {
+                    setSignInOpen(false)
+                    setSignUpOpen(true)
+                }}
             />
-        </div>
 
+            <SignUpDialog
+                open={signUpOpen}
+                onOpenChange={setSignUpOpen}
+                onSignInClick={() => {
+                    setSignUpOpen(false)
+                    setSignInOpen(true)
+                }}
+            />
+        </>
     );
 }
