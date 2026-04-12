@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpSchema, type SignUpInput } from '@/app/actions/auth.schemas'
@@ -76,16 +75,13 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
           window.location.href = '/'
         }, 1000)
       } else {
-        // If auto-signin fails, redirect to signin page
+        // If auto-signin fails, show a message and close the dialog
         toast({
-          title: 'Created',
-          description: 'Account created! Please sign in.',
+          title: 'Account Created',
+          description: 'Account created successfully! Please sign in with your credentials.',
         })
         form.reset()
         onOpenChange(false)
-        setTimeout(() => {
-          router.push('/auth/signin')
-        }, 1000)
       }
     } catch (error) {
       setIsLoading(false)
