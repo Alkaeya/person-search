@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpSchema, type SignUpInput } from '@/app/actions/auth.schemas'
 import { signUpUser } from '@/app/actions/auth.actions'
+import { signInUser } from '@/app/actions/auth.actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -50,35 +50,22 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
       // Create the user
       await signUpUser(data)
 
-      // Then sign them in
-      const result = await signIn('credentials', {
+      // Then sign them in using server action
+      await signInUser({
         email: data.email,
         password: data.password,
-        redirect: false,
       })
 
-      if (result?.error) {
-        toast({
-          title: 'Error',
-          description: 'Failed to sign in after account creation',
-          variant: 'destructive',
-        })
-        setIsLoading(false)
-        return
-      }
-
-      if (result?.ok) {
-        toast({
-          title: 'Success',
-          description: 'Account created and signed in successfully',
-        })
-        form.reset()
-        onOpenChange(false)
-        // Redirect after a short delay to let the session cookie be set
-        setTimeout(() => {
-          window.location.href = '/'
-        }, 500)
-      }
+      toast({
+        title: 'Success',
+        description: 'Account created and signed in successfully',
+      })
+      form.reset()
+      onOpenChange(false)
+      // Redirect after session is set
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 500)
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'

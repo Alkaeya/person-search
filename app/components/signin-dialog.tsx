@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInSchema, type SignInInput } from '@/app/actions/auth.schemas'
+import { signInUser } from '@/app/actions/auth.actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -45,34 +45,17 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
     try {
-      const result = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
+      await signInUser(data)
+      toast({
+        title: 'Success',
+        description: 'Signed in successfully',
       })
-
-      if (result?.error) {
-        toast({
-          title: 'Error',
-          description: 'Invalid email or password',
-          variant: 'destructive',
-        })
-        setIsLoading(false)
-        return
-      }
-
-      if (result?.ok) {
-        toast({
-          title: 'Success',
-          description: 'Signed in successfully',
-        })
-        form.reset()
-        onOpenChange(false)
-        // Redirect after a short delay to let the session cookie be set
-        setTimeout(() => {
-          window.location.href = '/'
-        }, 500)
-      }
+      form.reset()
+      onOpenChange(false)
+      // Redirect after session is set
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 500)
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'
