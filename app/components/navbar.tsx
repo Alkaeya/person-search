@@ -20,6 +20,7 @@ export default function Navbar() {
   const router = useRouter();
   const [signInOpen, setSignInOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
+  const [prefilledEmail, setPrefilledEmail] = useState<string>('');
 
   const handleSignOut = async () => {
     try {
@@ -112,17 +113,22 @@ export default function Navbar() {
 
       <SignInDialog
         open={signInOpen}
-        onOpenChange={setSignInOpen}
+        onOpenChange={(open) => {
+          setSignInOpen(open)
+          if (!open) setPrefilledEmail('')
+        }}
         onSignUpClick={() => {
           setSignInOpen(false)
           setSignUpOpen(true)
         }}
+        prefilledEmail={prefilledEmail}
       />
 
       <SignUpDialog
         open={signUpOpen}
         onOpenChange={setSignUpOpen}
-        onSignInClick={() => {
+        onSignInClick={(email: string) => {
+          setPrefilledEmail(email)
           setSignUpOpen(false)
           setSignInOpen(true)
         }}

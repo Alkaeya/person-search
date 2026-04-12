@@ -27,11 +27,10 @@ import { useToast } from '@/hooks/use-toast'
 interface SignUpDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSignInClick: () => void
+  onSignInClick: (email: string) => void
 }
 
 export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialogProps) {
-  const router = useRouter()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -50,39 +49,18 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
       // Create the user
       await signUpUser(data)
 
-      // Then automatically sign them in
-      const response = await fetch('/api/auth/callback/credentials', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+      // Show success and close signup modal
+      toast({
+        title: 'Success',
+        description: 'Account created! Now please sign in with your credentials.',
       })
+      form.reset()
+      onOpenChange(false)
 
-      if (response.ok) {
-        toast({
-          title: 'Success',
-          description: 'Account created and signed in!',
-        })
-        form.reset()
-        onOpenChange(false)
-
-        // Redirect to home after a brief delay
-        setTimeout(() => {
-          window.location.href = '/'
-        }, 1000)
-      } else {
-        // If auto-signin fails, show a message and close the dialog
-        toast({
-          title: 'Account Created',
-          description: 'Account created successfully! Please sign in with your credentials.',
-        })
-        form.reset()
-        onOpenChange(false)
-      }
+      // Open signin modal after a brief delay so user can see the toast
+      setTimeout(() => {
+        onSignInClick(data.email)
+      }, 500)
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'

@@ -28,9 +28,10 @@ interface SignInDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSignUpClick: () => void
+  prefilledEmail?: string
 }
 
-export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialogProps) {
+export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail }: SignInDialogProps) {
   const router = useRouter()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
@@ -38,7 +39,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: '',
+      email: prefilledEmail || '',
       password: '',
     },
   })
