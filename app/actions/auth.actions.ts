@@ -22,12 +22,11 @@ export async function signUpUser(data: SignUpInput) {
     // Hash password
     const hashedPassword = await hash(validatedData.password, 10)
 
-    // Create user
+    // Create user (without name)
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
         password: hashedPassword,
-        name: validatedData.name || null,
       },
     })
 
