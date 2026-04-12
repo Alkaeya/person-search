@@ -45,17 +45,9 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
     try {
+      // This will redirect on success, throw on error
       await signInUser(data)
-      toast({
-        title: 'Success',
-        description: 'Signed in successfully',
-      })
-      form.reset()
-      onOpenChange(false)
-      // Redirect after session is set
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 500)
+      // If redirect happens, execution stops here
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'

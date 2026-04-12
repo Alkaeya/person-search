@@ -47,25 +47,18 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
   const onSubmit = async (data: SignUpInput) => {
     setIsLoading(true)
     try {
-      // Create the user
-      await signUpUser(data)
+      // Create the user first
+      const signupResult = await signUpUser(data)
+      if (!signupResult.success) {
+        throw new Error("Failed to create account")
+      }
 
-      // Then sign them in using server action
+      // Then sign them in - this will redirect if successful
       await signInUser({
         email: data.email,
         password: data.password,
       })
-
-      toast({
-        title: 'Success',
-        description: 'Account created and signed in successfully',
-      })
-      form.reset()
-      onOpenChange(false)
-      // Redirect after session is set
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 500)
+      // If redirect happens, execution stops here
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'

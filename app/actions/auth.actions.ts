@@ -2,7 +2,7 @@
 
 import { signIn as nextAuthSignIn, signOut } from "@/app/auth"
 import { prisma } from "@/lib/prisma"
-import { hash, compare } from "bcryptjs"
+import { hash } from "bcryptjs"
 import { signUpSchema, signInSchema } from "./auth.schemas"
 import type { SignUpInput, SignInInput } from "./auth.schemas"
 
@@ -38,41 +38,14 @@ export async function signUpUser(data: SignUpInput) {
 }
 
 export async function signInUser(data: SignInInput) {
-  try {
-    const validatedData = signInSchema.parse(data)
-
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email: validatedData.email },
-    })
-
-    if (!user) {
-      throw new Error("Invalid email or password")
-    }
-
-    // Compare passwords
-    const passwordMatch = await compare(validatedData.password, user.password)
-
-    if (!passwordMatch) {
-      throw new Error("Invalid email or password")
-    }
-
-    // If credentials are valid, trigger NextAuth signin
-    const result = await nextAuthSignIn("credentials", {
-      email: validatedData.email,
-      password: validatedData.password,
-      redirect: false,
-    })
-
-    if (result?.error) {
-      throw new Error("Failed to sign in")
-    }
-
-    return { success: true, user }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Sign in failed"
-    throw new Error(message)
-  }
+  signInSchema.parse(data)
+  // NextAuth signIn will redirect on success, throw on error
+  return await nextAuthSignIn("credentials", {
+    email: data.email,
+    password: data.password,
+    redirect: true,
+    callbackUrl: "/",
+  })
 }
 
 export async function signOutUser() {
