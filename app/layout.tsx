@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import { ThemeProvider } from "@/components/theme-provider";
+import { NextAuthProvider } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +31,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning={true}>
     <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
-    >          
+    >
 
+<NextAuthProvider>
 <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -47,6 +49,7 @@ export default function RootLayout({
 
         <Footer />
         </ThemeProvider>
+</NextAuthProvider>
 
     </body>
 

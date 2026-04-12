@@ -12,7 +12,7 @@ interface UserEditDialogProps {
 export function UserEditDialog({ user }: UserEditDialogProps) {
   const handleEditUser = async (data: UserFormData): Promise<ActionState<User>> => {
     try {
-      const updatedUser = await updateUser(user.id, data)
+      const updatedUser = await updateUser(String(user.id), data)
       return {
         success: true,
         message: `User ${updatedUser.name} updated successfully`,

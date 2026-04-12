@@ -15,7 +15,7 @@ export default function SearchInput() {
   const handleSelect = React.useCallback((user: User) => {
     // Update URL
     const url = new URL(window.location.href)
-    url.searchParams.set('userId', user.id)
+    url.searchParams.set('userId', String(user.id))
     window.history.pushState({}, '', url.toString())
     window.location.reload()
   }, [])
@@ -25,7 +25,7 @@ export default function SearchInput() {
       <SearchCommand<User>
         onSearch={handleSearch}
         onItemSelect={handleSelect}
-        getItemId={(user) => user.id}
+        getItemId={(user) => String(user.id)}
         getItemLabel={(user) => user.name}
         placeholder="Search users..."
         noResultsText="No users found."

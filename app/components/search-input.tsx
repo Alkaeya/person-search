@@ -10,12 +10,12 @@ export default function SearchInput() {
     const loadOptions = async (inputValue: string) => {
         const users = await searchUsers(inputValue);
         return users.map(user => ({
-            value: user.id,
+            value: String(user.id),
             label: user.name,
         }));
     };
 
-    const handleChange = useCallback((option: { value: string } | null) => {
+    const handleChange = useCallback((option: { value: string; label: string } | null) => {
         const userId = option?.value || null;
 
         if (userId) {
@@ -42,7 +42,6 @@ export default function SearchInput() {
             <AsyncSelect
                 instanceId="user-search"
                 cacheOptions={false}
-                minInputLength={2}
                 inputValue={inputValue}
                 onInputChange={handleInputChange}
                 loadOptions={loadOptions}
