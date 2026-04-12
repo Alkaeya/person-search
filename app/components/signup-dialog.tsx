@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpSchema, type SignUpInput } from '@/app/actions/auth.schemas'
 import { signUpUser } from '@/app/actions/auth.actions'
-import { signInUser } from '@/app/actions/auth.actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -32,6 +32,7 @@ interface SignUpDialogProps {
 }
 
 export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialogProps) {
+  const router = useRouter()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -47,18 +48,21 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
   const onSubmit = async (data: SignUpInput) => {
     setIsLoading(true)
     try {
-      // Create the user first
-      const signupResult = await signUpUser(data)
-      if (!signupResult.success) {
-        throw new Error("Failed to create account")
-      }
+      // Create the user
+      await signUpUser(data)
 
-      // Then sign them in - this will redirect if successful
-      await signInUser({
-        email: data.email,
-        password: data.password,
+      toast({
+        title: 'Success',
+        description: 'Account created! Redirecting to sign in...',
       })
-      // If redirect happens, execution stops here
+
+      form.reset()
+      onOpenChange(false)
+
+      // Redirect to the auth signin page which will handle the actual auth
+      setTimeout(() => {
+        router.push(`/auth/signin?email=${encodeURIComponent(data.email)}`)
+      }, 1000)
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'
