@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpSchema, type SignUpInput } from '@/app/actions/auth.schemas'
@@ -32,7 +31,6 @@ interface SignUpDialogProps {
 }
 
 export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialogProps) {
-  const router = useRouter()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -55,7 +53,10 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
       })
       form.reset()
       onOpenChange(false)
-      router.refresh()
+      // Give session cookie time to be set, then reload to get updated session
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Sign up failed'
       toast({
