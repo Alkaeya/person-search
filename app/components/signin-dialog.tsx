@@ -48,19 +48,31 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick }: SignInDialog
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
-        redirect: true,
-        callbackUrl: '/',
+        redirect: false,
       })
 
-      if (!result?.ok) {
+      if (result?.error) {
         toast({
           title: 'Error',
           description: 'Invalid email or password',
           variant: 'destructive',
         })
         setIsLoading(false)
+        return
       }
-      // If redirect: true, the page will redirect automatically
+
+      if (result?.ok) {
+        toast({
+          title: 'Success',
+          description: 'Signed in successfully',
+        })
+        form.reset()
+        onOpenChange(false)
+        // Redirect after a short delay to let the session cookie be set
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 500)
+      }
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'
