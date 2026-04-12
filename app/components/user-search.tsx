@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import SearchInput from './search-input-cmd';
 import UserCardClient from './user-card-client';
 
@@ -11,11 +10,7 @@ export default async function UserSearch({ searchParams }: { searchParams: Promi
   return (
     <div className="space-y-6">
       <SearchInput />
-      {selectedUserId && (
-        <Suspense fallback={<p>Loading user...</p>}>
-          <UserCardClient userId={selectedUserId} />
-        </Suspense>
-      )}
+      {selectedUserId && <UserCardClient userId={selectedUserId} />}
     </div>
   );
 }
