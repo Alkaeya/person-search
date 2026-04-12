@@ -9,7 +9,13 @@ export default async function UserSearch({ searchParams }: { searchParams: Promi
   const selectedUserId = resolvedSearchParams?.userId || null;
 
   // Fetch the user based on the selectedUserId
-  const user = selectedUserId ? await getUserById(selectedUserId) : null;
+  let user = null;
+  try {
+    user = selectedUserId ? await getUserById(selectedUserId) : null;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    user = null;
+  }
 
   return (
     <div className="space-y-6">

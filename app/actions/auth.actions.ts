@@ -30,13 +30,6 @@ export async function signUpUser(data: SignUpInput) {
       },
     })
 
-    // Sign in the user
-    await signIn("credentials", {
-      email: validatedData.email,
-      password: validatedData.password,
-      redirect: false,
-    })
-
     return { success: true, user }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Sign up failed"

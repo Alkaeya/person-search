@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signUpSchema, type SignUpInput } from '@/app/actions/auth.schemas'
@@ -46,7 +47,20 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
   const onSubmit = async (data: SignUpInput) => {
     setIsLoading(true)
     try {
+      // Create the user
       await signUpUser(data)
+
+      // Then sign them in
+      const signInResult = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      })
+
+      if (!signInResult?.ok) {
+        throw new Error('Failed to sign in after account creation')
+      }
+
       toast({
         title: 'Success',
         description: 'Account created and signed in successfully',
