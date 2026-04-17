@@ -47,8 +47,27 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
   const onSubmit = async (data: SignUpInput) => {
     setIsLoading(true)
     try {
-      // Create the user
-      await signUpUser(data)
+      const result = await signUpUser(data)
+
+      if (!result.success) {
+        // Check if it's an email already in use error
+        if (result.error?.includes('Email already in use')) {
+          setAccountExistsEmail(form.getValues('email'))
+          toast({
+            title: 'Account Exists',
+            description: 'This email already has an account. Please sign in instead.',
+            variant: 'destructive',
+          })
+        } else {
+          toast({
+            title: 'Error',
+            description: result.error || 'Sign up failed',
+            variant: 'destructive',
+          })
+        }
+        setIsLoading(false)
+        return
+      }
 
       // Show success and close signup modal
       toast({
@@ -66,22 +85,11 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign up failed'
-
-      // Check if it's an email already in use error
-      if (message.includes('Email already in use')) {
-        setAccountExistsEmail(form.getValues('email'))
-        toast({
-          title: 'Account Exists',
-          description: 'This email already has an account. Please sign in instead.',
-          variant: 'destructive',
-        })
-      } else {
-        toast({
-          title: 'Error',
-          description: message,
-          variant: 'destructive',
-        })
-      }
+      toast({
+        title: 'Error',
+        description: message,
+        variant: 'destructive',
+      })
     }
   }
 

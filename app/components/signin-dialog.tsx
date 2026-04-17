@@ -49,19 +49,28 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
     setIsLoading(true)
     try {
       const result = await signInUser(data)
-      if (result?.success) {
-        toast({
-          title: 'Success',
-          description: 'Signed in successfully',
-        })
-        form.reset()
-        onOpenChange(false)
 
-        // Redirect after a brief delay
-        setTimeout(() => {
-          window.location.href = '/'
-        }, 500)
+      if (!result.success) {
+        setIsLoading(false)
+        toast({
+          title: 'Error',
+          description: result.error || 'Sign in failed',
+          variant: 'destructive',
+        })
+        return
       }
+
+      toast({
+        title: 'Success',
+        description: 'Signed in successfully',
+      })
+      form.reset()
+      onOpenChange(false)
+
+      // Redirect after a brief delay
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 500)
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'

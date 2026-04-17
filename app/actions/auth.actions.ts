@@ -16,13 +16,13 @@ export async function signUpUser(data: SignUpInput) {
     })
 
     if (existingUser) {
-      throw new Error("Email already in use")
+      return { success: false, error: "Email already in use" }
     }
 
     // Hash password
     const hashedPassword = await hash(validatedData.password, 10)
 
-    // Create user (without name)
+    // Create user
     const user = await prisma.user.create({
       data: {
         email: validatedData.email,
@@ -33,14 +33,14 @@ export async function signUpUser(data: SignUpInput) {
     return { success: true, user }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Sign up failed"
-    throw new Error(message)
+    return { success: false, error: message }
   }
 }
 
 export async function signInUser(data: SignInInput) {
   try {
     signInSchema.parse(data)
-    // Use redirect: false to handle errors in the dialog
+
     const result = await nextAuthSignIn("credentials", {
       email: data.email,
       password: data.password,
@@ -48,18 +48,17 @@ export async function signInUser(data: SignInInput) {
     })
 
     if (result?.error) {
-      throw new Error("Invalid email or password")
+      return { success: false, error: "Invalid email or password" }
     }
 
     if (result?.ok) {
-      // Redirect on success
       return { success: true }
     }
 
-    throw new Error("Sign in failed")
+    return { success: false, error: "Sign in failed" }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Sign in failed"
-    throw new Error(message)
+    return { success: false, error: message }
   }
 }
 
@@ -69,6 +68,7 @@ export async function signOutUser() {
     return { success: true }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Sign out failed"
-    throw new Error(message)
+    return { success: false, error: message }
   }
 }
+
