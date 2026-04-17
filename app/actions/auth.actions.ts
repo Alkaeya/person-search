@@ -38,14 +38,29 @@ export async function signUpUser(data: SignUpInput) {
 }
 
 export async function signInUser(data: SignInInput) {
-  signInSchema.parse(data)
-  // NextAuth signIn will redirect on success, throw on error
-  return await nextAuthSignIn("credentials", {
-    email: data.email,
-    password: data.password,
-    redirect: true,
-    callbackUrl: "/",
-  })
+  try {
+    signInSchema.parse(data)
+    // Use redirect: false to handle errors in the dialog
+    const result = await nextAuthSignIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    })
+
+    if (result?.error) {
+      throw new Error("Invalid email or password")
+    }
+
+    if (result?.ok) {
+      // Redirect on success
+      return { success: true }
+    }
+
+    throw new Error("Sign in failed")
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Sign in failed"
+    throw new Error(message)
+  }
 }
 
 export async function signOutUser() {
