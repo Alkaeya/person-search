@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInSchema, type SignInInput } from '@/app/actions/auth.schemas'
+import { signInUser } from '@/app/actions/auth.actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -47,33 +48,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
     try {
-      // Submit form to NextAuth signin endpoint directly
-      const response = await fetch('/api/auth/callback/credentials', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      })
-
-      if (response.ok) {
-        toast({
-          title: 'Success',
-          description: 'Signed in successfully',
-        })
-        form.reset()
-        onOpenChange(false)
-
-        // Wait a moment then reload to refresh session
-        setTimeout(() => {
-          window.location.href = '/'
-        }, 500)
-      } else {
-        throw new Error('Invalid email or password')
-      }
+      await signInUser(data)
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'
@@ -157,3 +132,4 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
     </Dialog>
   )
 }
+
