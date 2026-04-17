@@ -33,6 +33,7 @@ interface SignUpDialogProps {
 export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialogProps) {
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
+  const [accountExistsEmail, setAccountExistsEmail] = useState<string | null>(null)
 
   const form = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
@@ -55,6 +56,7 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
         description: 'Account created! Now please sign in with your credentials.',
       })
       form.reset()
+      setAccountExistsEmail(null)
       onOpenChange(false)
 
       // Open signin modal after a brief delay so user can see the toast
@@ -67,13 +69,10 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
 
       // Check if it's an email already in use error
       if (message.includes('Email already in use')) {
-        form.setError('email', {
-          type: 'manual',
-          message: 'An account with this email already exists. Please sign in instead.',
-        })
+        setAccountExistsEmail(form.getValues('email'))
         toast({
           title: 'Account Exists',
-          description: 'An account with this email already exists. Please sign in instead.',
+          description: 'This email already has an account. Please sign in instead.',
           variant: 'destructive',
         })
       } else {
@@ -86,94 +85,128 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
     }
   }
 
+  const handleSignInWithExistingEmail = () => {
+    onOpenChange(false)
+    setTimeout(() => {
+      onSignInClick(accountExistsEmail || '')
+    }, 300)
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px]">
         <DialogHeader>
-          <DialogTitle>Create your account</DialogTitle>
-          <DialogDescription>Welcome! Please fill in the details to get started.</DialogDescription>
+          <DialogTitle>
+            {accountExistsEmail ? 'Account Already Exists' : 'Create your account'}
+          </DialogTitle>
+          <DialogDescription>
+            {accountExistsEmail
+              ? `The email ${accountExistsEmail} is already registered. Please sign in to your existing account.`
+              : 'Welcome! Please fill in the details to get started.'}
+          </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email address</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Enter your email address"
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Create a password"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isLoading}
-                      placeholder="Confirm your password"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating account...' : 'Continue'}
+        {accountExistsEmail ? (
+          <div className="space-y-4">
+            <Button onClick={handleSignInWithExistingEmail} className="w-full">
+              Sign In to Existing Account
             </Button>
-          </form>
-        </Form>
-
-        <div className="space-y-3 pt-2 text-center text-sm">
-          <p className="text-muted-foreground">
-            Already have an account?{' '}
-            <button
+            <Button
+              variant="outline"
               onClick={() => {
-                onOpenChange(false)
-                onSignInClick()
+                setAccountExistsEmail(null)
+                form.reset()
               }}
-              className="text-primary hover:underline font-medium"
+              className="w-full"
             >
-              Sign in
-            </button>
-          </p>
-        </div>
+              Create New Account with Different Email
+            </Button>
+          </div>
+        ) : (
+          <>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email address</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="Enter your email address"
+                          type="email"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="Create a password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm password</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          placeholder="Confirm your password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? 'Creating account...' : 'Continue'}
+                </Button>
+              </form>
+            </Form>
+
+            <div className="space-y-3 pt-2 text-center text-sm">
+              <p className="text-muted-foreground">
+                Already have an account?{' '}
+                <button
+                  onClick={() => {
+                    onOpenChange(false)
+                    onSignInClick(form.getValues('email'))
+                  }}
+                  className="text-primary hover:underline font-medium"
+                >
+                  Sign in
+                </button>
+              </p>
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   )
 }
+
