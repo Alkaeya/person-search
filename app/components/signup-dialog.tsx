@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/use-toast'
 interface SignUpDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSignInClick: (email: string) => void
+  onSignInClick: () => void
 }
 
 export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialogProps) {
@@ -80,7 +80,7 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
 
       // Open signin modal after a brief delay so user can see the toast
       setTimeout(() => {
-        onSignInClick(data.email)
+        onSignInClick()
       }, 500)
     } catch (error) {
       setIsLoading(false)
@@ -96,7 +96,7 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
   const handleSignInWithExistingEmail = () => {
     onOpenChange(false)
     setTimeout(() => {
-      onSignInClick(accountExistsEmail || '')
+      onSignInClick()
     }, 300)
   }
 
@@ -203,7 +203,7 @@ export function SignUpDialog({ open, onOpenChange, onSignInClick }: SignUpDialog
                 <button
                   onClick={() => {
                     onOpenChange(false)
-                    onSignInClick(form.getValues('email'))
+                    onSignInClick()
                   }}
                   className="text-primary hover:underline font-medium"
                 >

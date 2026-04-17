@@ -69,7 +69,8 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
 
       // Redirect after a brief delay
       setTimeout(() => {
-        window.location.href = '/'
+        router.refresh()
+        router.push('/')
       }, 500)
     } catch (error) {
       setIsLoading(false)
