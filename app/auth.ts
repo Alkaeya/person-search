@@ -46,7 +46,12 @@ export const authConfig: NextAuthConfig = {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
+      try {
+        const urlObj = new URL(url)
+        if (urlObj.origin === baseUrl) return url
+      } catch (error) {
+        // Invalid URL, fallback to baseUrl
+      }
       return baseUrl
     },
   },
