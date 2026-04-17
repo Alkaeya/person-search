@@ -48,6 +48,7 @@ export async function signInUser(data: SignInInput) {
     })
 
     if (result?.error) {
+      console.error('NextAuth error:', result.error)
       return { success: false, error: "Invalid email or password" }
     }
 
@@ -58,6 +59,7 @@ export async function signInUser(data: SignInInput) {
     return { success: false, error: "Sign in failed" }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Sign in failed"
+    console.error('Sign in error:', error)
     return { success: false, error: message }
   }
 }

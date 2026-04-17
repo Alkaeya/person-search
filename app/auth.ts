@@ -41,38 +41,51 @@ export const authConfig: NextAuthConfig = {
       }
       return session
     },
+
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    },
   },
 
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-        const validatedCredentials = credentialsSchema.safeParse(credentials)
+        try {
+          const validatedCredentials = credentialsSchema.safeParse(credentials)
 
-        if (!validatedCredentials.success) {
+          if (!validatedCredentials.success) {
+            return null
+          }
+
+          const user = await prisma.user.findUnique({
+            where: { email: validatedCredentials.data.email },
+          })
+
+          if (!user) {
+            return null
+          }
+
+          const passwordMatch = await compare(
+            validatedCredentials.data.password,
+            user.password
+          )
+
+          if (!passwordMatch) {
+            return null
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          }
+        } catch (error) {
+          console.error("Auth error:", error)
           return null
-        }
-
-        const user = await prisma.user.findUnique({
-          where: { email: validatedCredentials.data.email },
-        })
-
-        if (!user) {
-          return null
-        }
-
-        const passwordMatch = await compare(
-          validatedCredentials.data.password,
-          user.password
-        )
-
-        if (!passwordMatch) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
         }
       },
     }),
