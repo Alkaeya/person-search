@@ -33,10 +33,15 @@ export default function SearchInput() {
             // Clear input after selection
             setInputValue('');
             // Only reload when a user is actually selected
-            const url = new URL(window.location.href);
-            url.searchParams.set('userId', userId);
-            window.history.pushState({}, '', url.toString());
-            window.location.reload(); // Ensure server re-render when user is selected
+            try {
+              const url = new URL(window.location.href);
+              url.searchParams.set('userId', userId);
+              window.history.pushState({}, '', url.toString());
+              window.location.reload(); // Ensure server re-render when user is selected
+            } catch (error) {
+              // If URL construction fails, just reload the page
+              window.location.reload()
+            }
         }
     }, []);
 

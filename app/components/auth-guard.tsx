@@ -11,6 +11,7 @@ export function AuthGuard() {
   const { data: session } = useSession()
   const [signInOpen, setSignInOpen] = useState(false)
   const [signUpOpen, setSignUpOpen] = useState(false)
+  const [prefilledEmail, setPrefilledEmail] = useState('')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -46,12 +47,14 @@ export function AuthGuard() {
           setSignInOpen(false)
           setSignUpOpen(true)
         }}
+        prefilledEmail={prefilledEmail}
       />
 
       <SignUpDialog
         open={signUpOpen}
         onOpenChange={setSignUpOpen}
-        onSignInClick={() => {
+        onSignInClick={(email: string) => {
+          setPrefilledEmail(email)
           setSignUpOpen(false)
           setSignInOpen(true)
         }}

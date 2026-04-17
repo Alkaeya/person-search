@@ -37,10 +37,15 @@ export default function SearchInput() {
 
   const handleSelect = React.useCallback((user: User) => {
     // Update URL
-    const url = new URL(window.location.href)
-    url.searchParams.set('userId', String(user.id))
-    window.history.pushState({}, '', url.toString())
-    window.location.reload()
+    try {
+      const url = new URL(window.location.href)
+      url.searchParams.set('userId', String(user.id))
+      window.history.pushState({}, '', url.toString())
+      window.location.reload()
+    } catch (error) {
+      // If URL construction fails, just reload the page
+      window.location.reload()
+    }
   }, [])
 
   return (
