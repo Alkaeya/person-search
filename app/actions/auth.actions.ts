@@ -3,6 +3,7 @@
 import { signIn as nextAuthSignIn, signOut } from "@/app/auth"
 import { prisma } from "@/lib/prisma"
 import { hash } from "bcryptjs"
+import { headers } from "next/headers"
 import { signUpSchema, signInSchema } from "./auth.schemas"
 import type { SignUpInput, SignInInput } from "./auth.schemas"
 
@@ -41,10 +42,24 @@ export async function signInUser(data: SignInInput) {
   try {
     signInSchema.parse(data)
 
+    const requestHeaders = await headers()
+    const forwardedHost = requestHeaders.get("x-forwarded-host")
+    const host = forwardedHost ?? requestHeaders.get("host")
+    const forwardedProto = requestHeaders.get("x-forwarded-proto")
+
+    const fallbackOrigin = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL
+    const origin =
+      host && host.length > 0
+        ? `${forwardedProto === "http" ? "http" : "https"}://${host}`
+        : fallbackOrigin
+
+    const redirectTo = origin ? `${origin}/` : undefined
+
     const redirectUrl = await nextAuthSignIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
+      ...(redirectTo ? { redirectTo } : {}),
     })
 
     if (typeof redirectUrl !== "string") {
