@@ -22,9 +22,9 @@ function normalizeAuthUrl(rawUrl?: string): string | undefined {
   }
 }
 
-const resolvedAuthUrl = normalizeAuthUrl(
-  process.env.AUTH_URL ?? process.env.NEXTAUTH_URL
-)
+const resolvedAuthUrl =
+  normalizeAuthUrl(process.env.AUTH_URL) ??
+  normalizeAuthUrl(process.env.NEXTAUTH_URL)
 
 if (resolvedAuthUrl) {
   process.env.AUTH_URL = resolvedAuthUrl
