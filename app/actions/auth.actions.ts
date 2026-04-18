@@ -74,7 +74,7 @@ export async function signInUser(data: SignInInput) {
     return { success: true }
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes("CredentialsSignin")) {
+      if (error.message.toLowerCase().includes("credentialssignin")) {
         return { success: false, error: "Invalid email or password" }
       }
 
