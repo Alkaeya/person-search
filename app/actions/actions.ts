@@ -7,6 +7,8 @@ import { User, userSchema } from './schemas'
 import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/app/auth'
+import { Prisma } from '@prisma/client'
+import { ZodError } from 'zod'
 
 export async function getCurrentUser() {
     const session = await auth()
@@ -80,6 +82,30 @@ export async function addUserSafe(
             data: newUser,
         }
     } catch (error) {
+        if (error instanceof ZodError) {
+            const firstIssue = error.issues[0]?.message
+            return {
+                success: false,
+                message: firstIssue || 'Please check the form fields and try again.',
+            }
+        }
+
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                return {
+                    success: false,
+                    message: 'This email already exists in your list.',
+                }
+            }
+
+            if (error.code === 'P2003') {
+                return {
+                    success: false,
+                    message: 'Your session is out of sync. Please sign in again.',
+                }
+            }
+        }
+
         const message =
             error instanceof Error ? error.message.toLowerCase() : ''
 

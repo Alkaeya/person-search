@@ -15,8 +15,13 @@ Deliver one Vercel production URL that demonstrates full-stack CRUD with real da
 2. Set `AUTH_URL` to your production domain (example: `https://person-search-gules.vercel.app`).
 3. Set `AUTH_SECRET` (or `NEXTAUTH_SECRET`) in Vercel project settings.
 4. Set `NEXT_PUBLIC_GITHUB_REPO_URL` to your public repository URL.
-4. Run migration and seed once against production database:
+5. Run migration and seed once against production database:
    - `pnpm prisma:deploy`
    - `pnpm prisma:seed`
-5. Redeploy and verify sign-in plus all CRUD operations from the production site.
-6. Submit one Vercel URL.
+6. Redeploy and verify sign-in plus all CRUD operations from the production site.
+7. Submit one Vercel URL.
+
+## Latest Production Fixes
+- [x] Fixed Auth.js invalid URL sign-in failures by aligning auth env vars (`AUTH_URL` + `AUTH_SECRET`) and upgrading auth runtime dependencies.
+- [x] Deployed safe add-user server-action error handling so production surfaces friendly messages instead of generic server component render errors.
+- [x] Improved add-user error mapping for Zod and Prisma typed errors so invalid fields and duplicate emails return actionable toasts.
