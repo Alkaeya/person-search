@@ -12,9 +12,11 @@ Deliver one Vercel production URL that demonstrates full-stack CRUD with real da
 
 ## Deployment Checklist
 1. Set `DATABASE_URL` in Vercel project settings.
-2. Set `NEXT_PUBLIC_GITHUB_REPO_URL` to your public repository URL.
-3. Run migration and seed once against production database:
+2. Set `AUTH_URL` to your production domain (example: `https://person-search-gules.vercel.app`).
+3. Set `AUTH_SECRET` (or `NEXTAUTH_SECRET`) in Vercel project settings.
+4. Set `NEXT_PUBLIC_GITHUB_REPO_URL` to your public repository URL.
+4. Run migration and seed once against production database:
    - `pnpm prisma:deploy`
    - `pnpm prisma:seed`
-4. Redeploy and verify all CRUD operations from the production site.
-5. Submit one Vercel URL.
+5. Redeploy and verify sign-in plus all CRUD operations from the production site.
+6. Submit one Vercel URL.

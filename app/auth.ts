@@ -5,6 +5,32 @@ import { compare } from "bcryptjs"
 import { z } from "zod"
 import NextAuth from "next-auth"
 
+function normalizeAuthUrl(rawUrl?: string): string | undefined {
+  if (!rawUrl) return undefined
+
+  const trimmed = rawUrl.trim()
+  if (!trimmed) return undefined
+
+  try {
+    return new URL(trimmed).origin
+  } catch {
+    try {
+      return new URL(`https://${trimmed}`).origin
+    } catch {
+      return undefined
+    }
+  }
+}
+
+const resolvedAuthUrl = normalizeAuthUrl(
+  process.env.AUTH_URL ?? process.env.NEXTAUTH_URL
+)
+
+if (resolvedAuthUrl) {
+  process.env.AUTH_URL = resolvedAuthUrl
+  process.env.NEXTAUTH_URL = resolvedAuthUrl
+}
+
 const credentialsSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -44,7 +70,7 @@ export const authConfig: NextAuthConfig = {
       try {
         const urlObj = new URL(url)
         if (urlObj.origin === baseUrl) return url
-      } catch (error) {
+      } catch {
         // Invalid URL, fallback to baseUrl
       }
       return baseUrl

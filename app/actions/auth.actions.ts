@@ -41,25 +41,40 @@ export async function signInUser(data: SignInInput) {
   try {
     signInSchema.parse(data)
 
-    const result = await nextAuthSignIn("credentials", {
+    const redirectUrl = await nextAuthSignIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
+      redirectTo: "/",
     })
 
-    if (result?.error) {
-      console.error('NextAuth error:', result.error)
+    if (typeof redirectUrl !== "string") {
+      console.error("NextAuth sign-in returned an unexpected response")
+      return { success: false, error: "Sign in failed" }
+    }
+
+    if (redirectUrl.includes("error=")) {
       return { success: false, error: "Invalid email or password" }
     }
 
-    if (result?.ok) {
-      return { success: true }
+    return { success: true }
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes("CredentialsSignin")) {
+        return { success: false, error: "Invalid email or password" }
+      }
+
+      if (error.message.includes("Invalid URL")) {
+        return {
+          success: false,
+          error:
+            "Authentication URL is invalid. Set AUTH_URL or NEXTAUTH_URL with http:// or https://.",
+        }
+      }
     }
 
-    return { success: false, error: "Sign in failed" }
-  } catch (error) {
     const message = error instanceof Error ? error.message : "Sign in failed"
-    console.error('Sign in error:', error)
+    console.error("Sign in error:", error)
     return { success: false, error: message }
   }
 }
