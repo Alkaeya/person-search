@@ -7,7 +7,6 @@ import { User, userSchema } from './schemas'
 import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/app/auth'
-import { Prisma } from '@prisma/client'
 import { ZodError } from 'zod'
 
 export async function getCurrentUser() {
@@ -90,24 +89,56 @@ export async function addUserSafe(
             }
         }
 
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === 'P2002') {
-                return {
-                    success: false,
-                    message: 'This email already exists in your list.',
-                }
-            }
+        const prismaErrorCode =
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            typeof (error as { code?: unknown }).code === 'string'
+                ? (error as { code: string }).code
+                : null
 
-            if (error.code === 'P2003') {
-                return {
-                    success: false,
-                    message: 'Your session is out of sync. Please sign in again.',
-                }
+        if (prismaErrorCode === 'P2002') {
+            return {
+                success: false,
+                message: 'This email already exists in your list.',
+            }
+        }
+
+        if (prismaErrorCode === 'P2003') {
+            return {
+                success: false,
+                message: 'Your session is out of sync. Please sign in again.',
+            }
+        }
+
+        if (prismaErrorCode === 'P2025') {
+            return {
+                success: false,
+                message: 'Could not save this user. Please refresh and try again.',
+            }
+        }
+
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name?: string }).name === 'PrismaClientValidationError'
+        ) {
+            return {
+                success: false,
+                message: 'Please check the form fields and try again.',
             }
         }
 
         const message =
             error instanceof Error ? error.message.toLowerCase() : ''
+
+        if (message.includes('unique constraint')) {
+                return {
+                    success: false,
+                    message: 'This email already exists in your list.',
+                }
+        }
 
         if (message.includes('unique constraint')) {
             return {
