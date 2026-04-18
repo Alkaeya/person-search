@@ -11,11 +11,6 @@ const credentialsSchema = z.object({
 })
 
 export const authConfig: NextAuthConfig = {
-  pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
-  },
-
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
