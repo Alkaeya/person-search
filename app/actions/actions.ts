@@ -69,6 +69,48 @@ export async function addUser(data: Omit<User, 'id'>): Promise<User> {
     return validatedUser
 }
 
+export async function addUserSafe(
+    data: Omit<User, 'id'>
+): Promise<{ success: boolean; message: string; data?: User }> {
+    try {
+        const newUser = await addUser(data)
+        return {
+            success: true,
+            message: `User ${newUser.name} added successfully`,
+            data: newUser,
+        }
+    } catch (error) {
+        const message =
+            error instanceof Error ? error.message.toLowerCase() : ''
+
+        if (message.includes('unique constraint')) {
+            return {
+                success: false,
+                message: 'This email already exists in your list.',
+            }
+        }
+
+        if (message.includes('unauthorized')) {
+            return {
+                success: false,
+                message: 'Please sign in to add users.',
+            }
+        }
+
+        if (message.includes('invalid email') || message.includes('phone number')) {
+            return {
+                success: false,
+                message: 'Please check the form fields and try again.',
+            }
+        }
+
+        return {
+            success: false,
+            message: 'Failed to add user. Please try again.',
+        }
+    }
+}
+
 export async function deleteUser(id: string): Promise<void> {
     const currentUser = await getCurrentUser()
 

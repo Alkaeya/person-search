@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react'
-import { addUser } from '@/app/actions/actions'
+import { addUserSafe } from '@/app/actions/actions'
 import { userFormSchema, User, UserFormData } from '@/app/actions/schemas'
 import { useSession } from 'next-auth/react'
 import { useToast } from '@/hooks/use-toast'
@@ -19,18 +19,11 @@ export function UserDialog() {
   const [signUpOpen, setSignUpOpen] = useState(false)
 
   const handleAddUser = async (data: UserFormData): Promise<ActionState<User>> => {
-    try {
-      const newUser = await addUser(data)
-      return {
-        success: true,
-        message: `User ${newUser.name} added successfully`,
-        data: newUser
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: 'Failed to add user ' + (error instanceof Error ? error.message : 'Unknown error')
-      }
+    const result = await addUserSafe(data)
+    return {
+      success: result.success,
+      message: result.message,
+      data: result.data,
     }
   }
 
