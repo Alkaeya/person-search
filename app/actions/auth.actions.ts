@@ -45,7 +45,6 @@ export async function signInUser(data: SignInInput) {
       email: data.email,
       password: data.password,
       redirect: false,
-      redirectTo: "/",
     })
 
     if (typeof redirectUrl !== "string") {
