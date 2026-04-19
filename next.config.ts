@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       // Add any custom aliases here if needed
     }
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname),

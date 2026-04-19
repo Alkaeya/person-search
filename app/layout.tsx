@@ -6,6 +6,7 @@ import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NextAuthProvider } from "./providers";
+import { auth } from "@/app/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,18 +23,20 @@ export const metadata: Metadata = {
   description: "A simple search app to find people by name",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
     <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
     >
 
-<NextAuthProvider>
+<NextAuthProvider session={session}>
 <ThemeProvider
             attribute="class"
             defaultTheme="system"

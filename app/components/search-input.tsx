@@ -38,7 +38,7 @@ export default function SearchInput() {
               url.searchParams.set('userId', userId);
               window.history.pushState({}, '', url.toString());
               window.location.reload(); // Ensure server re-render when user is selected
-            } catch (error) {
+                        } catch {
               // If URL construction fails, just reload the page
               window.location.reload()
             }

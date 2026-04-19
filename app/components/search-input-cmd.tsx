@@ -42,7 +42,7 @@ export default function SearchInput() {
       url.searchParams.set('userId', String(user.id))
       window.history.pushState({}, '', url.toString())
       window.location.reload()
-    } catch (error) {
+    } catch {
       // If URL construction fails, just reload the page
       window.location.reload()
     }

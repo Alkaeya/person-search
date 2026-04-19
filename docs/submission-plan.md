@@ -25,3 +25,6 @@ Deliver one Vercel production URL that demonstrates full-stack CRUD with real da
 - [x] Fixed Auth.js invalid URL sign-in failures by aligning auth env vars (`AUTH_URL` + `AUTH_SECRET`) and upgrading auth runtime dependencies.
 - [x] Deployed safe add-user server-action error handling so production surfaces friendly messages instead of generic server component render errors.
 - [x] Improved add-user error mapping for Zod and Prisma typed errors so invalid fields and duplicate emails return actionable toasts.
+- [x] Switched navbar sign-in/sign-out to NextAuth client methods (`signIn` and `signOut` with `redirect: false`) for immediate client session propagation.
+- [x] Hydrated `SessionProvider` with server `auth()` session in root layout to reduce stale auth state after credential login.
+- [x] Added explicit client `getSession()` refresh after auth actions before route refresh/navigation.

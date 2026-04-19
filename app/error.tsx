@@ -20,7 +20,7 @@ export default function Error({
           Temporary Issue
         </h2>
         <p className="text-sm text-yellow-800 mb-4">
-          We're having a temporary issue. Try refreshing the page or try again in a moment.
+          We&apos;re having a temporary issue. Try refreshing the page or try again in a moment.
         </p>
         <button
           onClick={() => reset()}

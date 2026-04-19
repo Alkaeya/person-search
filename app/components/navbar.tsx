@@ -6,8 +6,7 @@ import Link from 'next/link';
 import { Search, Moon, Sun, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from "@/components/ui/button";
-import { useSession } from 'next-auth/react';
-import { signOutUser } from '@/app/actions/auth.actions';
+import { getSession, signOut, useSession } from 'next-auth/react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { SignInDialog } from './signin-dialog';
@@ -24,13 +23,15 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await signOutUser();
+      await signOut({ redirect: false });
+      await getSession();
       toast({
         title: 'Signed out',
         description: 'You have been signed out successfully',
       });
+      router.refresh();
       router.push('/');
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to sign out',

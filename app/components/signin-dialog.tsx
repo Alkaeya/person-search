@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getSession, signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInSchema, type SignInInput } from '@/app/actions/auth.schemas'
-import { signInUser } from '@/app/actions/auth.actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -48,13 +48,17 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
   const onSubmit = async (data: SignInInput) => {
     setIsLoading(true)
     try {
-      const result = await signInUser(data)
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      })
 
-      if (!result.success) {
+      if (!result || result.error) {
         setIsLoading(false)
         toast({
           title: 'Error',
-          description: result.error || 'Sign in failed',
+          description: 'Invalid email or password',
           variant: 'destructive',
         })
         return
@@ -64,14 +68,12 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
         title: 'Success',
         description: 'Signed in successfully',
       })
+      await getSession()
       form.reset()
       onOpenChange(false)
-
-      // Redirect after a brief delay
-      setTimeout(() => {
-        router.refresh()
-        router.push('/')
-      }, 500)
+      setIsLoading(false)
+      router.refresh()
+      router.push('/')
     } catch (error) {
       setIsLoading(false)
       const message = error instanceof Error ? error.message : 'Sign in failed'
@@ -139,7 +141,7 @@ export function SignInDialog({ open, onOpenChange, onSignUpClick, prefilledEmail
 
         <div className="space-y-3 pt-2 text-center text-sm">
           <p className="text-muted-foreground">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <button
               onClick={() => {
                 onOpenChange(false)
