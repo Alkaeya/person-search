@@ -81,6 +81,12 @@ export async function addUserSafe(
             data: newUser,
         }
     } catch (error) {
+        console.error('[addUserSafe] Error details:', {
+            errorType: error instanceof Error ? error.constructor.name : typeof error,
+            message: error instanceof Error ? error.message : String(error),
+            fullError: error,
+        })
+
         if (error instanceof ZodError) {
             const firstIssue = error.issues[0]?.message
             return {
@@ -132,13 +138,6 @@ export async function addUserSafe(
 
         const message =
             error instanceof Error ? error.message.toLowerCase() : ''
-
-        if (message.includes('unique constraint')) {
-                return {
-                    success: false,
-                    message: 'This email already exists in your list.',
-                }
-        }
 
         if (message.includes('unique constraint')) {
             return {
