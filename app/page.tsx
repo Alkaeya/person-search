@@ -1,7 +1,6 @@
 import { UserDialog } from './components/user-dialog';
 import UserSearch from './components/user-search';
 
-export default function Home() {
 export default async function Home({
   searchParams,
 }: {
