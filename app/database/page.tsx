@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 const prismaSchema = `model Person {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   name        String
   email       String   @unique
   phoneNumber String

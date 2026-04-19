@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { getUserById } from '@/app/actions/actions'
 import { User } from '@/app/actions/schemas'
 
-export function useUser(userId: string | null) {
+export function useUser(userId: number | null) {
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {

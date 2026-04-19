@@ -23,7 +23,7 @@ export default function UsersList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function UsersList() {
     }
 
     try {
-      await updateUser(editingUser.id.toString(), data);
+      await updateUser(editingUser.id, data);
       toast({
         title: 'Success',
         description: `User ${data.name} updated successfully`,
@@ -73,7 +73,7 @@ export default function UsersList() {
     if (deletingUserId === null) return;
 
     try {
-      await deleteUser(deletingUserId.toString());
+      await deleteUser(deletingUserId);
       toast({
         title: 'Success',
         description: 'User deleted successfully',

@@ -5,7 +5,7 @@ import { Trash } from 'lucide-react'
 import { deleteUser } from '@/app/actions/actions'
 import { toast } from "@/hooks/use-toast"
 
-export default function DeleteButton({ userId }: { userId: string }) {
+export default function DeleteButton({ userId }: { userId: number }) {
   const handleDelete = async () => {
     try {
       console.log('DeleteButton: Attempting to delete user with ID', userId)

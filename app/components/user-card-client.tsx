@@ -5,7 +5,7 @@ import UserCard from './user-card';
 import { getUserById } from '@/app/actions/actions';
 import type { User } from '@/app/actions/schemas';
 
-export default function UserCardClient({ userId }: { userId: string }) {
+export default function UserCardClient({ userId }: { userId: number }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

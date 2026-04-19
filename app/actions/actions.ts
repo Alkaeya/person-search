@@ -167,7 +167,7 @@ export async function addUserSafe(
     }
 }
 
-export async function deleteUser(id: string): Promise<void> {
+export async function deleteUser(id: number): Promise<void> {
     const currentUser = await getCurrentUser()
 
     if (!currentUser) {
@@ -188,7 +188,7 @@ export async function deleteUser(id: string): Promise<void> {
     revalidatePath('/')
 }
 
-export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): Promise<User> {
+export async function updateUser(id: number, data: Partial<Omit<User, 'id'>>): Promise<User> {
     const currentUser = await getCurrentUser()
 
     if (!currentUser) {
@@ -222,7 +222,7 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
     return validatedUser
 }
 
-export const getUserById = cache(async (id: string) => {
+export const getUserById = cache(async (id: number) => {
     const currentUser = await getCurrentUser()
 
     if (!currentUser) {

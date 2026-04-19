@@ -49,11 +49,11 @@ Deliver one Vercel production URL demonstrating full-stack development mastery w
 - [x] Switched navbar sign-in/sign-out to NextAuth client methods (`signIn` and `signOut` with `redirect: false`) for immediate client session propagation.
 - [x] Hydrated `SessionProvider` with server `auth()` session in root layout to reduce stale auth state after credential login.
 - [x] Added explicit client `getSession()` refresh after auth actions before route refresh/navigation.
-- [x] Fixed Prisma schema type mismatch (Person.id changed from Int to String/cuid to match database).
-- [x] Fixed add-user failure by removing parseInt() conversions throughout server actions and components.
+- [x] Standardized Person primary keys as numeric auto-increment IDs (starting at 1).
+- [x] Updated server actions/components to use numeric IDs consistently.
 - [x] Deployed database migrations and seed data to production Neon PostgreSQL.
 - [x] Fixed home page rendering path to ensure selected `userId` displays the user card with Edit/Delete controls.
-- [x] Regenerated Prisma client to align generated types with `Person.id` as String/cuid (resolved production build type mismatch).
+- [x] Regenerated Prisma client to align generated types with numeric `Person.id`.
 
 ### 🧪 Live Verification (2026-04-19)
 - [x] Verified signup on production URL with a new account.
