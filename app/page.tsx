@@ -1,8 +1,12 @@
 import { UserDialog } from './components/user-dialog';
-import SearchInput from './components/search-input-cmd';
-import { TechnicalOverview } from './components/technical-overview';
+import UserSearch from './components/user-search';
 
 export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ userId?: string }>
+}) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <h1 className="text-5xl font-bold mb-12">User Search</h1>
@@ -11,14 +15,9 @@ export default function Home() {
         <div className="flex-shrink-0 pt-1">
           <UserDialog />
         </div>
-
-        <div className="flex-1">
-          <SearchInput />
-        </div>
       </div>
 
-      {/* How it works section */}
-      <TechnicalOverview />
+      <UserSearch searchParams={searchParams} />
     </div>
   );
 }
