@@ -3278,12 +3278,22 @@ export namespace Prisma {
 
   export type AggregatePerson = {
     _count: PersonCountAggregateOutputType | null
+    _avg: PersonAvgAggregateOutputType | null
+    _sum: PersonSumAggregateOutputType | null
     _min: PersonMinAggregateOutputType | null
     _max: PersonMaxAggregateOutputType | null
   }
 
+  export type PersonAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type PersonSumAggregateOutputType = {
+    id: number | null
+  }
+
   export type PersonMinAggregateOutputType = {
-    id: string | null
+    id: number | null
     name: string | null
     email: string | null
     phoneNumber: string | null
@@ -3293,7 +3303,7 @@ export namespace Prisma {
   }
 
   export type PersonMaxAggregateOutputType = {
-    id: string | null
+    id: number | null
     name: string | null
     email: string | null
     phoneNumber: string | null
@@ -3313,6 +3323,14 @@ export namespace Prisma {
     _all: number
   }
 
+
+  export type PersonAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type PersonSumAggregateInputType = {
+    id?: true
+  }
 
   export type PersonMinAggregateInputType = {
     id?: true
@@ -3383,6 +3401,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PersonAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PersonSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PersonMinAggregateInputType
@@ -3413,12 +3443,14 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PersonCountAggregateInputType | true
+    _avg?: PersonAvgAggregateInputType
+    _sum?: PersonSumAggregateInputType
     _min?: PersonMinAggregateInputType
     _max?: PersonMaxAggregateInputType
   }
 
   export type PersonGroupByOutputType = {
-    id: string
+    id: number
     name: string
     email: string
     phoneNumber: string
@@ -3426,6 +3458,8 @@ export namespace Prisma {
     updatedAt: Date
     userId: string
     _count: PersonCountAggregateOutputType | null
+    _avg: PersonAvgAggregateOutputType | null
+    _sum: PersonSumAggregateOutputType | null
     _min: PersonMinAggregateOutputType | null
     _max: PersonMaxAggregateOutputType | null
   }
@@ -3504,7 +3538,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      id: number
       name: string
       email: string
       phoneNumber: string
@@ -3935,7 +3969,7 @@ export namespace Prisma {
    * Fields of the Person model
    */
   interface PersonFieldRefs {
-    readonly id: FieldRef<"Person", 'String'>
+    readonly id: FieldRef<"Person", 'Int'>
     readonly name: FieldRef<"Person", 'String'>
     readonly email: FieldRef<"Person", 'String'>
     readonly phoneNumber: FieldRef<"Person", 'String'>
@@ -4477,6 +4511,20 @@ export namespace Prisma {
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
@@ -4614,7 +4662,7 @@ export namespace Prisma {
     AND?: PersonWhereInput | PersonWhereInput[]
     OR?: PersonWhereInput[]
     NOT?: PersonWhereInput | PersonWhereInput[]
-    id?: StringFilter<"Person"> | string
+    id?: IntFilter<"Person"> | number
     name?: StringFilter<"Person"> | string
     email?: StringFilter<"Person"> | string
     phoneNumber?: StringFilter<"Person"> | string
@@ -4636,7 +4684,7 @@ export namespace Prisma {
   }
 
   export type PersonWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+    id?: number
     userId_email?: PersonUserIdEmailCompoundUniqueInput
     AND?: PersonWhereInput | PersonWhereInput[]
     OR?: PersonWhereInput[]
@@ -4659,15 +4707,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     _count?: PersonCountOrderByAggregateInput
+    _avg?: PersonAvgOrderByAggregateInput
     _max?: PersonMaxOrderByAggregateInput
     _min?: PersonMinOrderByAggregateInput
+    _sum?: PersonSumOrderByAggregateInput
   }
 
   export type PersonScalarWhereWithAggregatesInput = {
     AND?: PersonScalarWhereWithAggregatesInput | PersonScalarWhereWithAggregatesInput[]
     OR?: PersonScalarWhereWithAggregatesInput[]
     NOT?: PersonScalarWhereWithAggregatesInput | PersonScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Person"> | string
+    id?: IntWithAggregatesFilter<"Person"> | number
     name?: StringWithAggregatesFilter<"Person"> | string
     email?: StringWithAggregatesFilter<"Person"> | string
     phoneNumber?: StringWithAggregatesFilter<"Person"> | string
@@ -4817,7 +4867,6 @@ export namespace Prisma {
   }
 
   export type PersonCreateInput = {
-    id?: string
     name: string
     email: string
     phoneNumber: string
@@ -4827,7 +4876,7 @@ export namespace Prisma {
   }
 
   export type PersonUncheckedCreateInput = {
-    id?: string
+    id?: number
     name: string
     email: string
     phoneNumber: string
@@ -4837,7 +4886,6 @@ export namespace Prisma {
   }
 
   export type PersonUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
@@ -4847,7 +4895,7 @@ export namespace Prisma {
   }
 
   export type PersonUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
@@ -4857,7 +4905,7 @@ export namespace Prisma {
   }
 
   export type PersonCreateManyInput = {
-    id?: string
+    id?: number
     name: string
     email: string
     phoneNumber: string
@@ -4867,7 +4915,6 @@ export namespace Prisma {
   }
 
   export type PersonUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
@@ -4876,7 +4923,7 @@ export namespace Prisma {
   }
 
   export type PersonUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
@@ -5088,6 +5135,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type PersonUserIdEmailCompoundUniqueInput = {
     userId: string
     email: string
@@ -5101,6 +5159,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+  }
+
+  export type PersonAvgOrderByAggregateInput = {
+    id?: SortOrder
   }
 
   export type PersonMaxOrderByAggregateInput = {
@@ -5121,6 +5183,26 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+  }
+
+  export type PersonSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type PersonCreateNestedManyWithoutUserInput = {
@@ -5249,6 +5331,14 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutPersonsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPersonsInput, UserUpdateWithoutPersonsInput>, UserUncheckedUpdateWithoutPersonsInput>
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5385,8 +5475,34 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type PersonCreateWithoutUserInput = {
-    id?: string
     name: string
     email: string
     phoneNumber: string
@@ -5395,7 +5511,7 @@ export namespace Prisma {
   }
 
   export type PersonUncheckedCreateWithoutUserInput = {
-    id?: string
+    id?: number
     name: string
     email: string
     phoneNumber: string
@@ -5459,7 +5575,7 @@ export namespace Prisma {
     AND?: PersonScalarWhereInput | PersonScalarWhereInput[]
     OR?: PersonScalarWhereInput[]
     NOT?: PersonScalarWhereInput | PersonScalarWhereInput[]
-    id?: StringFilter<"Person"> | string
+    id?: IntFilter<"Person"> | number
     name?: StringFilter<"Person"> | string
     email?: StringFilter<"Person"> | string
     phoneNumber?: StringFilter<"Person"> | string
@@ -5617,7 +5733,7 @@ export namespace Prisma {
   }
 
   export type PersonCreateManyUserInput = {
-    id?: string
+    id?: number
     name: string
     email: string
     phoneNumber: string
@@ -5634,7 +5750,6 @@ export namespace Prisma {
   }
 
   export type PersonUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
@@ -5643,7 +5758,7 @@ export namespace Prisma {
   }
 
   export type PersonUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
@@ -5652,7 +5767,7 @@ export namespace Prisma {
   }
 
   export type PersonUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
