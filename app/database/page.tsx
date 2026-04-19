@@ -4,10 +4,15 @@ import { Badge } from '@/components/ui/badge'
 const prismaSchema = `model Person {
   id          Int      @id @default(autoincrement())
   name        String
-  email       String   @unique
+  email       String
   phoneNumber String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, email])
 }`
 
 export default function DatabasePage() {
