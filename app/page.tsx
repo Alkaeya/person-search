@@ -1,5 +1,6 @@
 import { UserDialog } from './components/user-dialog';
 import UserSearch from './components/user-search';
+import { TechnicalOverview } from './components/technical-overview';
 
 export default async function Home({
   searchParams,
@@ -17,6 +18,10 @@ export default async function Home({
       </div>
 
       <UserSearch searchParams={searchParams} />
+
+      <div className="mt-8">
+        <TechnicalOverview />
+      </div>
     </div>
   );
 }
