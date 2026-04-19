@@ -23,7 +23,7 @@ export default function UsersList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {

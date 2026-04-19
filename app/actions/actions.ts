@@ -174,8 +174,7 @@ export async function deleteUser(id: string): Promise<void> {
         throw new Error('Unauthorized: Please sign in first')
     }
 
-    const personId = parseInt(id, 10)
-    const existing = await prisma.person.findUnique({ where: { id: personId } })
+    const existing = await prisma.person.findUnique({ where: { id } })
 
     if (!existing) {
         throw new Error(`Person with id ${id} not found`)
@@ -185,7 +184,7 @@ export async function deleteUser(id: string): Promise<void> {
         throw new Error('Unauthorized: You do not own this person record')
     }
 
-    await prisma.person.delete({ where: { id: personId } })
+    await prisma.person.delete({ where: { id } })
     revalidatePath('/')
 }
 
@@ -196,8 +195,7 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
         throw new Error('Unauthorized: Please sign in first')
     }
 
-    const personId = parseInt(id, 10)
-    const existingUser = await prisma.person.findUnique({ where: { id: personId } })
+    const existingUser = await prisma.person.findUnique({ where: { id } })
 
     if (!existingUser) {
         throw new Error(`Person with id ${id} not found`)
@@ -210,7 +208,7 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
     const updatedUser = userSchema.parse({ ...existingUser, ...data })
 
     const persisted = await prisma.person.update({
-        where: { id: personId },
+        where: { id },
         data: {
             name: updatedUser.name,
             email: updatedUser.email,
@@ -231,9 +229,8 @@ export const getUserById = cache(async (id: string) => {
         return null
     }
 
-    const personId = parseInt(id, 10)
     const user = await prisma.person.findUnique({
-        where: { id: personId },
+        where: { id },
     })
 
     if (user && user.userId !== currentUser.id) {
