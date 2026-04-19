@@ -6,7 +6,7 @@ export function TechnicalOverview() {
         The search functionality is implemented using a server action, which searches an array of pre-populated user data. The AsyncSelect
         component sends the search query to the server action, which filters the users based on a{" "}
         <code className="bg-gray-800 px-2 py-1 rounded text-sm font-mono">startsWith</code>
-        {" "}matching strategy. When a user
+        {" "}matching logic. When a user
         is selected from the dropdown, their details are displayed in a card component.
       </p>
     </div>

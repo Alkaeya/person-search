@@ -2,7 +2,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
   return (
     <footer className="border-t bg-background py-6 text-center text-sm text-muted-foreground">
-      <p>Alkaeya &copy; {currentYear} Person Search App. All rights reserved.</p>
+      <p>Ariana Siddayao &copy; {currentYear} Person Search App. All rights reserved.</p>
     </footer>
   )
 }
