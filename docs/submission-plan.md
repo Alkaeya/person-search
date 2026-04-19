@@ -52,6 +52,16 @@ Deliver one Vercel production URL demonstrating full-stack development mastery w
 - [x] Fixed Prisma schema type mismatch (Person.id changed from Int to String/cuid to match database).
 - [x] Fixed add-user failure by removing parseInt() conversions throughout server actions and components.
 - [x] Deployed database migrations and seed data to production Neon PostgreSQL.
+- [x] Fixed home page rendering path to ensure selected `userId` displays the user card with Edit/Delete controls.
+- [x] Regenerated Prisma client to align generated types with `Person.id` as String/cuid (resolved production build type mismatch).
+
+### 🧪 Live Verification (2026-04-19)
+- [x] Verified signup on production URL with a new account.
+- [x] Verified signin updates navbar/session state immediately without manual refresh.
+- [x] CREATE verified: added `Test Person` record.
+- [x] READ verified: searched and retrieved the created record.
+- [x] UPDATE verified: renamed record to `Test Person Updated` and confirmed via search.
+- [x] DELETE verified: deleted the record and confirmed it no longer appears in search results.
 
 ### 🎨 UI/UX Quality
 - [x] Professional design with dark/light theme support
