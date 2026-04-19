@@ -3,7 +3,7 @@
 import { z } from 'zod'
 
 export const userSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   phoneNumber: z.string().regex(/^(?:\+63|0)9\d{9}$/, {
