@@ -54,6 +54,10 @@ Deliver one Vercel production URL demonstrating full-stack development mastery w
 - [x] Deployed database migrations and seed data to production Neon PostgreSQL.
 - [x] Fixed home page rendering path to ensure selected `userId` displays the user card with Edit/Delete controls.
 - [x] Regenerated Prisma client to align generated types with numeric `Person.id`.
+- [x] Restored original "How it works" section content on Home page and kept it out of About page.
+- [x] Fixed edit dialog reliability by using zodResolver, showing proper field-level errors, and only closing dialog on successful submit.
+- [x] Fixed stale selected-card behavior after delete/add by clearing `userId` query state and refreshing route data.
+- [x] Stabilized search typing behavior by switching Home to AsyncSelect-based input and fixing controlled input handler return logic.
 
 ### 🧪 Live Verification (2026-04-19)
 - [x] Verified signup on production URL with a new account.

@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/command"
 import {
   Popover,
+  PopoverAnchor,
   PopoverContent,
-  PopoverTrigger,
 } from "@/components/ui/popover"
 
 /**
@@ -36,6 +36,8 @@ export interface SearchCommandProps<T> {
   noResultsText?: string
   /** Optional callback when the input receives focus */
   onFocus?: () => void
+  /** Debounce duration in milliseconds before running search */
+  searchDebounceMs?: number
 }
 
 /**
@@ -109,43 +111,82 @@ export const SearchCommand = <T,>({
   placeholder = "Search...",
   noResultsText = "No results found.",
   onFocus,
+  searchDebounceMs = 0,
 }: SearchCommandProps<T>) => {
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<T[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedItem, setSelectedItem] = useState<T | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [inputKey, setInputKey] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const handleSearch = useCallback(async (value: string) => {
+  const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value)
-    
-    if (!value) {
+
+    const trimmed = value.trim()
+    if (!trimmed) {
       setItems([])
       setOpen(false)
+      setLoading(false)
       return
     }
 
-    setLoading(true)
     setOpen(true)
-    
-    try {
-      const results = await onSearch(value)
-      setItems(results)
-    } catch (error) {
-      console.error('Error searching:', error)
-      setItems([])
-    } finally {
-      setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    const query = searchQuery.trim()
+
+    if (!query) {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+      return
     }
-  }, [onSearch])
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+
+    const runSearch = async () => {
+      setLoading(true)
+      try {
+        const results = await onSearch(query)
+        setItems(results)
+      } catch (error) {
+        console.error('Error searching:', error)
+        setItems([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (searchDebounceMs <= 0) {
+      void runSearch()
+      return
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      void runSearch()
+    }, searchDebounceMs)
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
+  }, [searchQuery, onSearch, searchDebounceMs])
 
   const handleSelect = useCallback((item: T) => {
     setSelectedItem(item)
     setOpen(false)
-    setSearchQuery(getItemLabel(item))
+    setSearchQuery("")
+    setItems([])
+    setInputKey((prev) => prev + 1)
     onItemSelect(item)
-  }, [getItemLabel, onItemSelect])
+  }, [onItemSelect])
 
   // Keep focus on input when popover opens so user can continue typing
   useEffect(() => {
@@ -156,18 +197,18 @@ export const SearchCommand = <T,>({
 
   return (
     <div className="w-full relative">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen} modal={false}>
+        <PopoverAnchor asChild>
           <div>
             <Command 
               className="rounded-lg border shadow-md"
               shouldFilter={false}
             >
               <CommandInput
+                key={inputKey}
                 ref={inputRef}
                 placeholder={placeholder}
-                value={searchQuery}
-                onValueChange={handleSearch}
+                onValueChange={handleSearchChange}
                 onFocus={onFocus}
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Enter') {
@@ -177,7 +218,7 @@ export const SearchCommand = <T,>({
               />
             </Command>
           </div>
-        </PopoverTrigger>
+        </PopoverAnchor>
         <PopoverContent 
           className="w-[--radix-popover-trigger-width] p-0" 
           align="start"

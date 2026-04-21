@@ -1,3 +1,5 @@
+'use client'
+
 // components/user-card.tsx
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -9,14 +11,12 @@ import { UserEditDialog } from './user-edit-dialog'
 
 interface UserCardProps {
   user: User
+  onUserUpdated?: (user: User) => void
 }
 
-console.log("UserCard module loaded");
-
-export default function UserCard({ user }: UserCardProps) {
+export default function UserCard({ user, onUserUpdated }: UserCardProps) {
   if (!user || !user.name) {
-    console.error("UserCard: Invalid user object", user);
-    return <p>Error: Invalid user data</p>;
+    return <p>Error: Invalid user data</p>
   }
 
   return (
@@ -44,8 +44,8 @@ export default function UserCard({ user }: UserCardProps) {
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <DeleteButton userId={user.id} />
-        <UserEditDialog user={user} />
+        <UserEditDialog user={user} onUpdated={onUserUpdated} />
       </CardFooter>
     </Card>
-  );
+  )
 }

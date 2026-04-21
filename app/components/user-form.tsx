@@ -34,10 +34,10 @@ export function UserForm({ form }: FormComponentProps) {
               Enter full name.
             </FormDescription>
             {fieldState.error && (
-                            <p className="text-red-600 text-sm mt-1">
-                                {String(fieldState.error) || ''}
-                            </p>
-                        ) }
+              <p className="text-red-600 text-sm mt-1">
+                {fieldState.error.message || ''}
+              </p>
+            )}
           </FormItem>
         )}
       />
@@ -54,10 +54,10 @@ export function UserForm({ form }: FormComponentProps) {
               Enter email address.
             </FormDescription>
             {fieldState.error && (
-                            <p className="text-red-600 text-sm mt-1">
-                                {String(fieldState.error) || ''}
-                            </p>
-                        ) }
+              <p className="text-red-600 text-sm mt-1">
+                {fieldState.error.message || ''}
+              </p>
+            )}
           </FormItem>
         )}
       />
@@ -74,10 +74,10 @@ export function UserForm({ form }: FormComponentProps) {
               Enter phone number in Philippines mobile format.
             </FormDescription>
             {fieldState.error && (
-                            <p className="text-red-600 text-sm mt-1">
-                                {String(fieldState.error) || ''}
-                            </p>
-                        ) }
+              <p className="text-red-600 text-sm mt-1">
+                {fieldState.error.message || ''}
+              </p>
+            )}
           </FormItem>
         )}
       />

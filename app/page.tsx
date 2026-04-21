@@ -1,5 +1,5 @@
 import { UserDialog } from './components/user-dialog';
-import SearchInput from './components/search-input-cmd';
+import SearchInput from './components/search-input';
 import UserCardClient from './components/user-card-client';
 import { TechnicalOverview } from './components/technical-overview';
 

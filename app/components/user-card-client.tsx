@@ -40,5 +40,5 @@ export default function UserCardClient({ userId }: { userId: number }) {
     return <p className="text-sm text-gray-500">User not found</p>;
   }
 
-  return <UserCard user={user} />;
+  return <UserCard user={user} onUserUpdated={setUser} />;
 }

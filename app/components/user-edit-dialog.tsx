@@ -7,12 +7,14 @@ import MutableDialog, { ActionState } from '@/components/mutable-dialog'
 
 interface UserEditDialogProps {
   user: User
+  onUpdated?: (user: User) => void
 }
 
-export function UserEditDialog({ user }: UserEditDialogProps) {
+export function UserEditDialog({ user, onUpdated }: UserEditDialogProps) {
   const handleEditUser = async (data: UserFormData): Promise<ActionState<User>> => {
     try {
       const updatedUser = await updateUser(user.id, data)
+      onUpdated?.(updatedUser)
       return {
         success: true,
         message: `User ${updatedUser.name} updated successfully`,

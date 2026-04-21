@@ -11,15 +11,30 @@ import { Button } from '@/components/ui/button'
 import { SignInDialog } from './signin-dialog'
 import { SignUpDialog } from './signup-dialog'
 import MutableDialog, { ActionState } from '@/components/mutable-dialog'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 export function UserDialog() {
   const { data: session } = useSession()
   const { toast } = useToast()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [signInOpen, setSignInOpen] = useState(false)
   const [signUpOpen, setSignUpOpen] = useState(false)
 
   const handleAddUser = async (data: UserFormData): Promise<ActionState<User>> => {
     const result = await addUserSafe(data)
+
+    if (result.success) {
+      const params = new URLSearchParams(searchParams.toString())
+      if (params.has('userId')) {
+        params.delete('userId')
+        const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+        router.replace(nextUrl)
+      }
+      router.refresh()
+    }
+
     return {
       success: result.success,
       message: result.message,

@@ -4,7 +4,6 @@
 
 import { revalidatePath } from 'next/cache'
 import { User, userSchema } from './schemas'
-import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/app/auth'
 import { ZodError } from 'zod'
@@ -222,7 +221,7 @@ export async function updateUser(id: number, data: Partial<Omit<User, 'id'>>): P
     return validatedUser
 }
 
-export const getUserById = cache(async (id: number) => {
+export async function getUserById(id: number) {
     const currentUser = await getCurrentUser()
 
     if (!currentUser) {
@@ -238,4 +237,4 @@ export const getUserById = cache(async (id: number) => {
     }
 
     return user || null
-})
+}

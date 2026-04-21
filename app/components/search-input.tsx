@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 import AsyncSelect from 'react-select/async';
+import type { InputActionMeta } from 'react-select';
 import { searchUsers } from '@/app/actions/actions';
 import { useSession } from 'next-auth/react';
 import { useToast } from '@/hooks/use-toast';
@@ -45,7 +46,11 @@ export default function SearchInput() {
         }
     }, []);
 
-    const handleInputChange = (value: string) => {
+    const handleInputChange = (value: string, meta: InputActionMeta) => {
+        if (meta.action !== 'input-change') {
+            return value;
+        }
+
         if (!session?.user) {
             if (value.length > 0) {
                 toast({
@@ -55,9 +60,11 @@ export default function SearchInput() {
                 });
                 setSignInOpen(true);
             }
-            return;
+            return '';
         }
+
         setInputValue(value);
+        return value;
     };
 
     return (
