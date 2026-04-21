@@ -15,27 +15,29 @@ export default async function Home({
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <h1 className="text-5xl font-bold mb-12">User Search</h1>
-
-      <div className="flex gap-6 mb-8 items-start">
-        <div className="flex-shrink-0 mt-6">
-          <UserDialog />
-        </div>
-
-        <div className="flex-1">
-          <SearchInput />
-        </div>
-      </div>
-
       {selectedUserId && (
         <div className="mb-8">
           <UserCardClient userId={selectedUserId} />
         </div>
       )}
 
-      <div className="mt-8">
-        <TechnicalOverview />
-      </div>
+      {!selectedUserId && (
+        <>
+          <div className="flex gap-6 mb-8 items-start">
+            <div className="flex-shrink-0 mt-6">
+              <UserDialog />
+            </div>
+
+            <div className="flex-1">
+              <SearchInput />
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <TechnicalOverview />
+          </div>
+        </>
+      )}
     </div>
   );
 }

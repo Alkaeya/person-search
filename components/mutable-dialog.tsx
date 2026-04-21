@@ -53,6 +53,7 @@ export default function MutableDialog<T extends FieldValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
   });
+  const isSubmitting = form.formState.isSubmitting;
 
   // Reset the form when the dialog is closed
   useEffect(() => {
@@ -102,8 +103,8 @@ export default function MutableDialog<T extends FieldValues>({
           <FormComponent form={form} />
           <div className="mt-4">
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Close</Button>
-              <Button type="submit">{submitButtonLabel}</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting}>Close</Button>
+              <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Saving...' : submitButtonLabel}</Button>
             </DialogFooter>
           </div>
         </form>

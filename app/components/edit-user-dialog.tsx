@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { userFormSchema, type User, type UserFormData } from '@/app/actions/schemas';
@@ -13,7 +14,6 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { UserForm } from './user-form';
-import { useState } from 'react';
 
 interface EditUserDialogProps {
   user: User | null;
@@ -23,7 +23,6 @@ interface EditUserDialogProps {
 
 export function EditUserDialog({ user, onClose, onSubmit }: EditUserDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(!!user);
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
@@ -34,12 +33,28 @@ export function EditUserDialog({ user, onClose, onSubmit }: EditUserDialogProps)
     } : undefined,
   });
 
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      });
+      return;
+    }
+
+    form.reset({
+      name: '',
+      email: '',
+      phoneNumber: '',
+    });
+  }, [user, form]);
+
   const handleSubmit = async (data: UserFormData) => {
     setIsLoading(true);
     try {
       await onSubmit(data);
       form.reset();
-      setIsOpen(false);
       onClose();
     } finally {
       setIsLoading(false);
@@ -47,8 +62,7 @@ export function EditUserDialog({ user, onClose, onSubmit }: EditUserDialogProps)
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      setIsOpen(open);
+    <Dialog open={!!user} onOpenChange={(open) => {
       if (!open) onClose();
     }}>
       <DialogContent className="sm:max-w-[425px]">
@@ -63,7 +77,6 @@ export function EditUserDialog({ user, onClose, onSubmit }: EditUserDialogProps)
           <div className="mt-4">
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => {
-                setIsOpen(false);
                 onClose();
               }} disabled={isLoading}>
                 Cancel

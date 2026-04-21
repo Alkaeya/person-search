@@ -32,7 +32,6 @@ export function UserDialog() {
         const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
         router.replace(nextUrl)
       }
-      router.refresh()
     }
 
     return {

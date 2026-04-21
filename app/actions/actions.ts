@@ -48,6 +48,25 @@ export async function searchUsers(query: string): Promise<User[]> {
     return results.map((user) => userSchema.parse(user))
 }
 
+export async function getAllUsers(): Promise<User[]> {
+    const currentUser = await getCurrentUser()
+
+    if (!currentUser) {
+        return []
+    }
+
+    const results = await prisma.person.findMany({
+        where: {
+            userId: currentUser.id,
+        },
+        orderBy: {
+            name: 'asc',
+        },
+    })
+
+    return results.map((user) => userSchema.parse(user))
+}
+
 export async function addUser(data: Omit<User, 'id'>): Promise<User> {
     const currentUser = await getCurrentUser()
 
